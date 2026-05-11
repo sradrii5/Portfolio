@@ -1,22 +1,61 @@
 "use client"
 
-import type { FormEvent } from "react"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { CheckCircle2, Send, Loader2 } from "lucide-react"
+import { sendEmail } from "@/app/actions"
 
 export default function ContactForm() {
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const data = new FormData(form)
-    const name = data.get("name")
-    const email = data.get("email")
-    const message = data.get("message")
-    window.location.href = `mailto:hello@adriancastro.dev?subject=Contacto desde portfolio - ${name}&body=${encodeURIComponent(`De: ${name} (${email})\n\n${message}`)}`
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [errorMessage, setErrorMessage] = useState("")
+
+  async function handleSubmit(formData: FormData) {
+    setStatus("loading")
+    setErrorMessage("")
+
+    const result = await sendEmail(formData)
+
+    if (result.error) {
+      setErrorMessage(result.error)
+      setStatus("error")
+    } else {
+      setStatus("success")
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center space-y-4 rounded-xl border border-gold/20 bg-card p-12 text-center"
+      >
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/10">
+          <CheckCircle2 className="h-8 w-8 text-gold" />
+        </div>
+        <h2 className="text-2xl font-bold">¡Mensaje enviado!</h2>
+        <p className="text-muted">
+          Gracias por contactar. Te responderé lo antes posible.
+        </p>
+        <button
+          onClick={() => setStatus("idle")}
+          className="mt-4 text-sm font-medium text-gold hover:underline"
+        >
+          Enviar otro mensaje
+        </button>
+      </motion.div>
+    )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-foreground">
+    <motion.form
+      action={handleSubmit}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="space-y-2">
+        <label htmlFor="name" className="text-sm font-medium text-foreground">
           Nombre
         </label>
         <input
@@ -24,12 +63,13 @@ export default function ContactForm() {
           id="name"
           name="name"
           required
-          className="mt-1 block w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm text-foreground placeholder-muted focus:border-gold focus:outline-none"
+          disabled={status === "loading"}
+          className="block w-full rounded-lg border border-border bg-card px-4 py-3 text-sm transition-all focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold disabled:opacity-50"
           placeholder="Tu nombre"
         />
       </div>
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-foreground">
+      <div className="space-y-2">
+        <label htmlFor="email" className="text-sm font-medium text-foreground">
           Email
         </label>
         <input
@@ -37,12 +77,13 @@ export default function ContactForm() {
           id="email"
           name="email"
           required
-          className="mt-1 block w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm text-foreground placeholder-muted focus:border-gold focus:outline-none"
+          disabled={status === "loading"}
+          className="block w-full rounded-lg border border-border bg-card px-4 py-3 text-sm transition-all focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold disabled:opacity-50"
           placeholder="tu@email.com"
         />
       </div>
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium text-foreground">
+      <div className="space-y-2">
+        <label htmlFor="message" className="text-sm font-medium text-foreground">
           Mensaje
         </label>
         <textarea
@@ -50,16 +91,39 @@ export default function ContactForm() {
           name="message"
           rows={5}
           required
-          className="mt-1 block w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm text-foreground placeholder-muted focus:border-gold focus:outline-none"
+          disabled={status === "loading"}
+          className="block w-full rounded-lg border border-border bg-card px-4 py-3 text-sm transition-all focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold disabled:opacity-50"
           placeholder="Cuéntame sobre tu proyecto..."
         />
       </div>
+
+      <AnimatePresence>
+        {status === "error" && (
+          <motion.p
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="text-sm text-red-500"
+          >
+            {errorMessage}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       <button
         type="submit"
-        className="rounded-md bg-gold px-6 py-3 text-sm font-medium text-black transition-opacity hover:opacity-90"
+        disabled={status === "loading"}
+        className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg bg-gold px-6 py-3 text-sm font-bold text-black transition-all hover:bg-gold/90 disabled:opacity-50"
       >
-        Enviar mensaje
+        {status === "loading" ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <>
+            <span>Enviar mensaje</span>
+            <Send className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+          </>
+        )}
       </button>
-    </form>
+    </motion.form>
   )
 }
