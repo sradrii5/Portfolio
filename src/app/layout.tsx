@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://portfolio-one-taupe-50.vercel.app"),
   title: {
     default: "Adrián Castro | Web Developer & Automation Engineer",
     template: "%s | Adrián Castro",
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: "https://adriancastro.dev", // Cambiar por la URL real
+    url: "https://portfolio-one-taupe-50.vercel.app",
     title: "Adrián Castro | Web Developer & Automation Engineer",
     description: "Desarrollador Web y Especialista en Automatización con IA.",
     siteName: "Adrián Castro Portfolio",
