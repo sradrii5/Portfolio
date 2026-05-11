@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: "Adrián Castro Portfolio",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.png?v=1",
         width: 1200,
         height: 630,
         alt: "Adrián Castro | Portfolio",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Adrián Castro | Web Developer & Automation Engineer",
     description: "Desarrollador Web y Especialista en Automatización con IA.",
-    images: ["/og-image.png"],
+    images: ["/og-image.png?v=1"],
   },
   robots: {
     index: true,
