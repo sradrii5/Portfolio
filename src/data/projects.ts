@@ -33,7 +33,7 @@ export const projects: Project[] = [
     image: "/projects/biohacking.png",
     links: {
       github: "https://github.com/sradrii5/BioHacking",
-      live: "https://bio-hacking-seven.vercel.app",
+      live: "https://biohackerage.com",
     },
   },
   {
