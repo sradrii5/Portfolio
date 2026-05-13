@@ -1,15 +1,20 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 
 const navItems = [
+  { href: "/services", label: "Servicios" },
   { href: "/projects", label: "Proyectos" },
+  { href: "/blog", label: "Blog" },
   { href: "/experience", label: "Experiencia" },
   { href: "/contact", label: "Contacto" },
 ]
 
 export default function Header() {
+  const pathname = usePathname()
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -21,12 +26,14 @@ export default function Header() {
         <Link href="/" className="text-lg font-bold tracking-tighter text-gold">
           Adrián Castro
         </Link>
-        <ul className="flex items-center gap-8 text-sm text-muted">
+        <ul className="flex items-center gap-6 text-sm text-muted">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="transition-colors hover:text-foreground"
+                className={`transition-colors hover:text-foreground ${
+                  pathname === item.href ? "font-medium text-foreground" : ""
+                }`}
               >
                 {item.label}
               </Link>

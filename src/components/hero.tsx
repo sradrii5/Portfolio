@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, Zap } from "lucide-react"
+import { ArrowRight, Zap, CalendarClock } from "lucide-react"
 
 export default function Hero() {
   return (
@@ -50,7 +50,8 @@ export default function Hero() {
             href="/contact"
             className="group flex items-center gap-2 rounded-md bg-gold px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-105 hover:opacity-90 active:scale-95"
           >
-            Analicemos tu proceso
+            <CalendarClock className="h-4 w-4" />
+            Auditoría gratuita de 30 min
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
@@ -60,6 +61,16 @@ export default function Hero() {
             Ver casos de estudio
           </Link>
         </motion.div>
+
+        {/* Social proof nudge */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-6 text-xs text-muted/50"
+        >
+          Sin compromiso · 30 minutos · Identificamos juntos qué procesos puedes automatizar
+        </motion.p>
       </div>
     </section>
   )

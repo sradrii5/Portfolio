@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { X, ExternalLink, Code } from "lucide-react"
+import { X, ExternalLink, Code, TrendingUp } from "lucide-react"
 import type { Project } from "@/data/projects"
 
 interface ProjectModalProps {
@@ -19,7 +19,6 @@ const categoryLabel: Record<string, string> = {
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
-  // Close on Escape key
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
@@ -28,7 +27,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     return () => window.removeEventListener("keydown", handleKey)
   }, [onClose])
 
-  // Prevent body scroll when open
   useEffect(() => {
     if (project) {
       document.body.style.overflow = "hidden"
@@ -42,7 +40,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     <AnimatePresence>
       {project && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -53,7 +50,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
           />
 
-          {/* Modal */}
           <motion.div
             key="modal"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -61,11 +57,9 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            // Stop click from propagating to backdrop
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl shadow-black/50">
-              {/* Close button */}
               <button
                 onClick={onClose}
                 className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/80 text-muted backdrop-blur-sm transition-colors hover:border-gold hover:text-foreground"
@@ -74,7 +68,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <X className="h-4 w-4" />
               </button>
 
-              {/* Project image */}
               {project.image && (
                 <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl">
                   <Image
@@ -88,20 +81,30 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 </div>
               )}
 
-              {/* Content */}
               <div className="p-8">
-                {/* Category badge */}
                 <span className="inline-block rounded-full bg-gold/10 px-3 py-1 text-xs font-medium uppercase tracking-widest text-gold">
                   {categoryLabel[project.category] ?? project.category}
                 </span>
 
-                {/* Title */}
                 <h2 className="mt-3 text-2xl font-bold text-foreground">{project.title}</h2>
 
-                {/* Full description */}
-                <p className="mt-4 text-base leading-relaxed text-muted">{project.description}</p>
+                {/* Impact metric */}
+                {project.metric && (
+                  <div className="mt-4 flex items-start gap-3 rounded-xl border border-gold/20 bg-gold/5 p-4">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gold/15">
+                      <TrendingUp className="h-4 w-4 text-gold" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gold">{project.metric}</p>
+                      {project.metricDetail && (
+                        <p className="mt-1 text-xs leading-relaxed text-muted">{project.metricDetail}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
-                {/* Tech stack */}
+                <p className="mt-5 text-base leading-relaxed text-muted">{project.description}</p>
+
                 <div className="mt-6">
                   <h3 className="mb-3 text-xs font-medium uppercase tracking-widest text-foreground/50">
                     Stack Tecnológico
@@ -118,7 +121,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                   </div>
                 </div>
 
-                {/* Links */}
                 {(project.links.github || project.links.live) && (
                   <div className="mt-8 flex flex-wrap gap-3">
                     {project.links.live && (
