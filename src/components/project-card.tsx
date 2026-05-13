@@ -1,7 +1,7 @@
 "use client"
 
 import type { Project } from "@/data/projects"
-import { ExternalLink, Code } from "lucide-react"
+import { ExternalLink, Code, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
@@ -9,9 +9,10 @@ import { motion } from "framer-motion"
 interface ProjectCardProps {
   project: Project
   priority?: boolean
+  onClick: () => void
 }
 
-export default function ProjectCard({ project, priority }: ProjectCardProps) {
+export default function ProjectCard({ project, priority, onClick }: ProjectCardProps) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -19,7 +20,12 @@ export default function ProjectCard({ project, priority }: ProjectCardProps) {
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.4 }}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-gold/50 hover:shadow-2xl hover:shadow-gold/5"
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-gold/50 hover:shadow-2xl hover:shadow-gold/5"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick() }}
+      aria-label={`Ver detalles de ${project.title}`}
     >
       {project.image && (
         <div className="relative aspect-video overflow-hidden">
@@ -51,29 +57,38 @@ export default function ProjectCard({ project, priority }: ProjectCardProps) {
         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
           {project.description}
         </p>
-        <div className="mt-auto pt-6 flex items-center gap-4">
-          {project.links.github && (
-            <Link
-              href={project.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground"
-            >
-              <Code className="h-4 w-4" />
-              Código
-            </Link>
-          )}
-          {project.links.live && (
-            <Link
-              href={project.links.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-gold"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Demo en vivo
-            </Link>
-          )}
+
+        {/* Footer row */}
+        <div className="mt-auto flex items-center justify-between pt-6">
+          <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            {project.links.github && (
+              <Link
+                href={project.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground"
+              >
+                <Code className="h-4 w-4" />
+                Código
+              </Link>
+            )}
+            {project.links.live && (
+              <Link
+                href={project.links.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-medium text-muted transition-colors hover:text-gold"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Demo en vivo
+              </Link>
+            )}
+          </div>
+
+          {/* "Ver más" hint */}
+          <span className="flex items-center gap-1 text-xs text-muted/50 transition-colors group-hover:text-gold">
+            Ver más <ChevronRight className="h-3 w-3" />
+          </span>
         </div>
       </div>
     </motion.article>
